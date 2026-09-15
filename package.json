@@ -62,7 +62,7 @@
     "serve:dev": "concurrently --kill-others \"ts-node-dev app.ts\" \"cd frontend && ng serve\"",
     "start": "node build/app",
     "test": "echo running tests...",
-    "test:all": "cd frontend && ng test --watch=false --source-map=true && cd .. && npm run test:server",
+    "test:all": "cd frontend && node ./node_modules/@angular/cli/bin/ng test --watch=false --source-map=true && cd .. && npm run test:server",
     "test:chromium": "cd frontend && ng test --watch=false --source-map=false --browsers=ChromiumHeadless && cd .. && npm run test:server",
     "test:server": "nyc --report-dir=./build/reports/coverage/server-tests mocha -r ts-node/register -r source-map-support/register --recursive test/server/**/*.ts",
     "rsn": "ts-node rsn/rsn.ts",
