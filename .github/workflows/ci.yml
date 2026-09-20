@@ -37,6 +37,24 @@ jobs:
       - name: Run tests
         run: npm run test:all
 
+  gitleaks:
+    name: Scan for hard-coded secrets
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks container
+        run: |
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -v "$GITHUB_WORKSPACE:/repo" \
+            ghcr.io/gitleaks/gitleaks:v8.21.2 \
+            detect --source=/repo --verbose --redact
+
   build:
     name: Build and publish Docker image
     needs: test
