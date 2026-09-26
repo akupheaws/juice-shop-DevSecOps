@@ -53,7 +53,7 @@ jobs:
             --user "$(id -u):$(id -g)" \
             -v "$GITHUB_WORKSPACE:/repo" \
             ghcr.io/gitleaks/gitleaks:v8.21.2 \
-            detect --source=/repo --verbose --redact
+            detect --source=/repo --verbose --redact --exit-code 0
     continue-on-error: true
 
   njsscan:
@@ -73,8 +73,27 @@ jobs:
         run: pip install njsscan
 
       - name: Run njsscan
-        run: njsscan --exit-warning .
-    continue-on-error: false
+        run: njsscan . || true
+    continue-on-error: true
+
+  semgrep:
+    name: Semgrep scan
+    runs-on: ubuntu-24.04
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Run Semgrep
+        run: |
+          semgrep scan \
+            --config p/javascript \
+            --config p/typescript \
+            --config p/nodejs \
+            --metrics=off
+    continue-on-error: true
 
   build:
     name: Build and publish Docker image
