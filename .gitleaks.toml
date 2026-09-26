@@ -1,0 +1,14 @@
+title = "Juice Shop Gitleaks config"
+
+# Keep all of Gitleaks' built-in detection rules.
+[extend]
+useDefault = true
+
+# Test files contain fake JWTs and API keys as fixtures. Those are known
+# false positives. Leaks anywhere else in the source code are still reported.
+[allowlist]
+description = "Fake secrets used as test fixtures"
+paths = [
+  '''node_modules/''',
+  '''.*[sS]pec\.ts$''',
+]
