@@ -53,7 +53,15 @@ jobs:
             --user "$(id -u):$(id -g)" \
             -v "$GITHUB_WORKSPACE:/repo" \
             ghcr.io/gitleaks/gitleaks:v8.21.2 \
-            detect --source=/repo --verbose --redact --exit-code 0
+            detect --source=/repo --verbose --redact --exit-code 0 \
+            --report-format json --report-path /repo/gitleaks.json
+
+      - name: Upload Gitleaks report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gitleaks-report
+          path: gitleaks.json
     continue-on-error: true
 
   njsscan:
@@ -73,7 +81,16 @@ jobs:
         run: pip install njsscan
 
       - name: Run njsscan
-        run: njsscan . || true
+        run: |
+          njsscan . || true
+          njsscan . --json -o njsscan.json || true
+
+      - name: Upload njsscan report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: njsscan-report
+          path: njsscan.json
     continue-on-error: true
 
   semgrep:
@@ -92,7 +109,16 @@ jobs:
             --config p/javascript \
             --config p/typescript \
             --config p/nodejs \
-            --metrics=off
+            --metrics=off \
+            --verbose \
+            --json-output=semgrep.json
+
+      - name: Upload Semgrep report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-report
+          path: semgrep.json
     continue-on-error: true
 
   build:
