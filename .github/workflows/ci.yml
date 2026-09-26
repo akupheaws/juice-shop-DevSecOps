@@ -73,7 +73,7 @@ jobs:
         run: pip install njsscan
 
       - name: Run njsscan
-        run: njsscan .
+        run: njsscan --exit-warning .
     continue-on-error: false
 
   build:
