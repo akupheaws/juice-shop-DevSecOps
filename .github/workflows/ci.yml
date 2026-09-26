@@ -38,7 +38,7 @@ jobs:
         run: npm run test:all
 
   gitleaks:
-    name: Scan for hard-coded secrets
+    name: Gitleaks scan
     runs-on: ubuntu-24.04
 
     steps:
@@ -83,7 +83,7 @@ jobs:
       - name: Run njsscan
         run: |
           njsscan . || true
-          njsscan . --json -o njsscan.json || true
+          njsscan . --defectdojo -o njsscan.json || true
 
       - name: Upload njsscan report
         if: always()
@@ -119,6 +119,45 @@ jobs:
         with:
           name: semgrep-report
           path: semgrep.json
+    continue-on-error: true
+
+  defectdojo:
+    name: Upload reports to DefectDojo
+    needs: [gitleaks, njsscan, semgrep]
+    if: always()
+    runs-on: ubuntu-24.04
+    env:
+      DEFECTDOJO_API_KEY: ${{ secrets.DEFECTDOJO_API_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Download scan reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: '*-report'
+          merge-multiple: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install requests
+        run: pip install requests
+
+      - name: Upload Gitleaks report
+        run: python upload-report.py gitleaks.json "Gitleaks Scan"
+        continue-on-error: true
+
+      - name: Upload njsscan report
+        run: python upload-report.py njsscan.json "Generic Findings Import"
+        continue-on-error: true
+
+      - name: Upload Semgrep report
+        run: python upload-report.py semgrep.json "Semgrep JSON Report"
+        continue-on-error: true
     continue-on-error: true
 
   build:
