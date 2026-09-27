@@ -121,9 +121,101 @@ jobs:
           path: semgrep.json
     continue-on-error: true
 
+  retirejs:
+    name: Retire.js scan
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          npm install --ignore-scripts
+          cd frontend && npm install --ignore-scripts --legacy-peer-deps
+
+      - name: Install Retire.js
+        run: npm install -g retire
+
+      - name: Run Retire.js
+        run: |
+          retire --path . --exitwith 0
+          retire --path . --outputformat json --outputpath retirejs.json --exitwith 0
+
+      - name: Upload Retire.js report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: retirejs-report
+          path: retirejs.json
+    continue-on-error: true
+
+  dependency-check:
+    name: OWASP Dependency-Check scan
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          npm install --ignore-scripts
+          cd frontend && npm install --ignore-scripts --legacy-peer-deps
+
+      - name: Cache vulnerability database
+        uses: actions/cache@v4
+        with:
+          path: ~/.dependency-check-data
+          key: dependency-check-data-${{ github.run_id }}
+          restore-keys: dependency-check-data-
+
+      - name: Run OWASP Dependency-Check
+        env:
+          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: |
+          mkdir -p ~/.dependency-check-data reports
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -v "$GITHUB_WORKSPACE:/src" \
+            -v "$HOME/.dependency-check-data:/usr/share/dependency-check/data" \
+            owasp/dependency-check:latest \
+            --scan /src \
+            --project juice-shop \
+            --exclude "**/.git/**" \
+            --format HTML --format JSON --format XML \
+            --prettyPrint \
+            --out /src/reports \
+            ${NVD_API_KEY:+--nvdApiKey "$NVD_API_KEY"}
+          mv reports/dependency-check-report.html dependency-check.html
+          mv reports/dependency-check-report.json dependency-check.json
+          mv reports/dependency-check-report.xml dependency-check.xml
+          jq -r '.dependencies[] | select(.vulnerabilities) | .fileName as $f | .vulnerabilities[] | "\(.severity)\t\(.name)\t\($f)"' dependency-check.json | sort -u
+
+      - name: Upload Dependency-Check report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-check-report
+          path: |
+            dependency-check.html
+            dependency-check.json
+            dependency-check.xml
+    continue-on-error: true
+
   defectdojo:
     name: Upload reports to DefectDojo
-    needs: [gitleaks, njsscan, semgrep]
+    needs: [gitleaks, njsscan, semgrep, retirejs, dependency-check]
     if: always()
     runs-on: ubuntu-24.04
     env:
@@ -157,6 +249,14 @@ jobs:
 
       - name: Upload Semgrep report
         run: python upload-report.py semgrep.json "Semgrep JSON Report"
+        continue-on-error: true
+
+      - name: Upload Retire.js report
+        run: python upload-report.py retirejs.json "Retire.js Scan"
+        continue-on-error: true
+
+      - name: Upload Dependency-Check report
+        run: python upload-report.py dependency-check.xml "Dependency Check Scan"
         continue-on-error: true
     continue-on-error: true
 
