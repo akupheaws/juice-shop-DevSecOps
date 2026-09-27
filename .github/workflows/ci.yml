@@ -145,7 +145,7 @@ jobs:
         run: |
           npm ci --ignore-scripts
           node scripts/remove-unused-benchmarks.js
-          npm ci --prefix frontend --ignore-scripts
+          npm ci --prefix frontend --ignore-scripts || npm install --prefix frontend --ignore-scripts
 
       - name: Install Retire.js
         run: npm install -g retire
