@@ -21,6 +21,7 @@ library.add(faUnlockAlt, faSave)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-two-factor-auth',
   templateUrl: './two-factor-auth.component.html',
   styleUrls: ['./two-factor-auth.component.scss']

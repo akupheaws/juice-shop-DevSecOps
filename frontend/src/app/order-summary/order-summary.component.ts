@@ -12,6 +12,7 @@ import { DeliveryService } from '../Services/delivery.service'
 import { SnackBarHelperService } from '../Services/snack-bar-helper.service'
 
 @Component({
+  standalone: false,
   selector: 'app-order-summary',
   templateUrl: './order-summary.component.html',
   styleUrls: ['./order-summary.component.scss']

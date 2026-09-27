@@ -6,7 +6,7 @@
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog'
 import { MatDividerModule } from '@angular/material/divider'
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { QRCodeModule } from 'anuglar2-qrcode'
+import { QRCodeComponent } from 'angularx-qrcode'
 import { TranslateModule } from '@ngx-translate/core'
 import { QrCodeComponent } from './qr-code.component'
 import { MatButtonModule } from '@angular/material/button'
@@ -19,7 +19,7 @@ describe('QrCodeComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         TranslateModule.forRoot(),
-        QRCodeModule,
+        QRCodeComponent,
         MatDividerModule,
         MatButtonModule,
         MatDialogModule

@@ -1,13 +1,14 @@
 import { Component, Input, OnInit, Output, EventEmitter, ViewChild, DoCheck, KeyValueDiffers, KeyValueDiffer } from '@angular/core'
-import { NgxTextDiffComponent } from 'ngx-text-diff'
-import { CookieService } from 'ngx-cookie'
-import { DiffTableFormat } from 'ngx-text-diff/lib/ngx-text-diff.model'
+import { NgxTextDiffComponent } from '../shared/text-diff'
+import { CookieService } from '../shared/cookie'
+import { DiffTableFormat } from '../shared/text-diff'
 
 interface RandomFixes {
   fix: string
   index: number
 }
 @Component({
+  standalone: false,
   selector: 'app-code-fixes',
   templateUrl: './code-fixes.component.html',
   styleUrls: ['./code-fixes.component.scss']

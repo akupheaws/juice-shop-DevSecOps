@@ -13,6 +13,7 @@ library.add(faUserSlash, faHandPaper)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-error-page',
   templateUrl: './error-page.component.html',
   styleUrls: ['./error-page.component.scss']

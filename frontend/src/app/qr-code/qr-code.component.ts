@@ -12,6 +12,7 @@ library.add(faArrowCircleLeft)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-qr-code',
   templateUrl: './qr-code.component.html',
   styleUrls: ['./qr-code.component.scss']

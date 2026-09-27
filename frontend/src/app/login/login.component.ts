@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 import { WindowRefService } from '../Services/window-ref.service'
 import { Router } from '@angular/router'
 import { Component, NgZone, OnInit } from '@angular/core'
@@ -22,6 +22,7 @@ dom.watch()
 const oauthProviderUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
 
 @Component({
+  standalone: false,
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']

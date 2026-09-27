@@ -1,0 +1,15 @@
+node_modules/
+frontend/node_modules/
+build/
+frontend/dist/
+frontend/.angular/
+frontend/out-tsc/
+logs/
+.nyc_output/
+*.pem
+.env
+.DS_Store
+coverage/
+data/juiceshop.sqlite*
+i18n/*.json
+data/chatbot/*.json

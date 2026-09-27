@@ -4,7 +4,7 @@
  */
 
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
-import { SlideshowModule } from 'ng-simple-slideshow'
+import { SlideshowModule } from '../shared/slideshow'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
 
 import { AboutComponent } from './about.component'

@@ -9,6 +9,7 @@ import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 
 @Component({
+  standalone: false,
   selector: 'app-privacy-security',
   templateUrl: './privacy-security.component.html',
   styleUrls: ['./privacy-security.component.scss']

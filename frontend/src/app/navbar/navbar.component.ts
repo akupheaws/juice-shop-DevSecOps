@@ -9,7 +9,7 @@ import { UserService } from '../Services/user.service'
 import { AdministrationService } from '../Services/administration.service'
 import { ConfigurationService } from '../Services/configuration.service'
 import { Component, EventEmitter, NgZone, OnInit, Output } from '@angular/core'
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 import { TranslateService } from '@ngx-translate/core'
 import { Router } from '@angular/router'
 import { SocketIoService } from '../Services/socket-io.service'
@@ -47,6 +47,7 @@ library.add(faLanguage, faSearch, faSignInAlt, faSignOutAlt, faComment, faBomb, 
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss']

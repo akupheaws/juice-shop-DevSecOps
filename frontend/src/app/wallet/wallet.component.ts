@@ -9,6 +9,7 @@ import { UntypedFormControl, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
 
 @Component({
+  standalone: false,
   selector: 'app-wallet',
   templateUrl: './wallet.component.html',
   styleUrls: ['./wallet.component.scss']

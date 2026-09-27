@@ -15,6 +15,7 @@ library.add(faWindows)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-challenge-status-badge',
   templateUrl: './challenge-status-badge.component.html',
   styleUrls: ['./challenge-status-badge.component.scss']

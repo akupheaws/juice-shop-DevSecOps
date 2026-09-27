@@ -27,6 +27,7 @@ const utils = require('../lib/utils')
 const mongodb = require('./mongodb')
 const security = require('../lib/insecurity')
 const logger = require('../lib/logger')
+const { seedCredentials } = require('../lib/seedCredentials')
 
 const fs = require('fs')
 const path = require('path')
@@ -108,17 +109,17 @@ async function createUsers () {
   const users = await loadStaticData('users')
 
   await Promise.all(
-    users.map(async ({ username, email, password, customDomain, key, role, deletedFlag, profileImage, securityQuestion, feedback, address, card, totpSecret, lastLoginIp = '' }: User) => {
+    users.map(async ({ username, email, customDomain, key, role, deletedFlag, profileImage, securityQuestion, feedback, address, card, lastLoginIp = '' }: User) => {
       try {
         const completeEmail = customDomain ? email : `${email}@${config.get('application.domain')}`
         const user = await UserModel.create({
           username,
           email: completeEmail,
-          password,
+          password: seedCredentials(key).password,
           role,
           deluxeToken: role === security.roles.deluxe ? security.deluxeToken(completeEmail) : '',
           profileImage: `assets/public/images/uploads/${profileImage ?? (role === security.roles.admin ? 'defaultAdmin.png' : 'default.svg')}`,
-          totpSecret,
+          totpSecret: seedCredentials(key).totpSecret,
           lastLoginIp
         })
         datacache.users[key] = user

@@ -6,7 +6,7 @@
 import { TranslateService } from '@ngx-translate/core'
 import { ChallengeService } from '../Services/challenge.service'
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core'
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 import { SocketIoService } from '../Services/socket-io.service'
 
 interface HackingProgress {
@@ -15,6 +15,7 @@ interface HackingProgress {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-server-started-notification',
   templateUrl: './server-started-notification.component.html',
   styleUrls: ['./server-started-notification.component.scss']

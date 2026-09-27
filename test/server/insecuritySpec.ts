@@ -121,10 +121,10 @@ describe('insecurity', () => {
   })
 
   describe('sanitizeHtml', () => {
-    it('handles empty inputs by returning their string representation', () => {
-      expect(security.sanitizeHtml()).to.equal('undefined')
-      expect(security.sanitizeHtml(undefined)).to.equal('undefined')
-      expect(security.sanitizeHtml(null)).to.equal('null')
+    it('normalizes empty inputs to empty strings', () => {
+      expect(security.sanitizeHtml()).to.equal('')
+      expect(security.sanitizeHtml(undefined)).to.equal('')
+      expect(security.sanitizeHtml(null)).to.equal('')
       expect(security.sanitizeHtml('')).to.equal('')
     })
 
@@ -146,8 +146,8 @@ describe('insecurity', () => {
       expect(security.sanitizeHtml('Sani<iframe src="alert("IFrameXSS")"></iframe>tizedIFrame')).to.equal('SanitizedIFrame')
     })
 
-    it('can be bypassed by exploiting lack of recursive sanitization', () => {
-      expect(security.sanitizeHtml('<<script>Foo</script>iframe src="javascript:alert(`xss`)">')).to.equal('<iframe src="javascript:alert(`xss`)">')
+    it('escapes nested markup without exposing an executable tag', () => {
+      expect(security.sanitizeHtml('<<script>Foo</script>iframe src="javascript:alert(`xss`)">')).to.equal('&lt;iframe src="javascript:alert(`xss`)"&gt;')
     })
   })
 
@@ -173,10 +173,10 @@ describe('insecurity', () => {
   })
 
   describe('sanitizeSecure', () => {
-    it('handles empty inputs by returning their string representation', () => {
-      expect(security.sanitizeSecure()).to.equal('undefined')
-      expect(security.sanitizeSecure(undefined)).to.equal('undefined')
-      expect(security.sanitizeSecure(null)).to.equal('null')
+    it('normalizes empty inputs to empty strings', () => {
+      expect(security.sanitizeSecure()).to.equal('')
+      expect(security.sanitizeSecure(undefined)).to.equal('')
+      expect(security.sanitizeSecure(null)).to.equal('')
       expect(security.sanitizeSecure('')).to.equal('')
     })
 
@@ -199,7 +199,7 @@ describe('insecurity', () => {
     })
 
     it('cannot be bypassed by exploiting lack of recursive sanitization', () => {
-      expect(security.sanitizeSecure('Bla<<script>Foo</script>iframe src="javascript:alert(`xss`)">Blubb')).to.equal('BlaBlubb')
+      expect(security.sanitizeSecure('Bla<<script>Foo</script>iframe src="javascript:alert(`xss`)">Blubb')).to.equal('Bla&lt;iframe src="javascript:alert(`xss`)"&gt;Blubb')
     })
   })
 

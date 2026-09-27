@@ -2,11 +2,12 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "module": "es2020",
+    "module": "es2022",
     "types": [
       "jasmine",
       "node"
-    ]
+    ],
+    "moduleResolution": "bundler"
   },
   "files": [
     "test.ts",

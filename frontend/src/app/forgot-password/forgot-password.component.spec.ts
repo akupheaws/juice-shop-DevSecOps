@@ -19,7 +19,7 @@ import { UserService } from 'src/app/Services/user.service'
 import { of, throwError } from 'rxjs'
 import { MatTooltipModule } from '@angular/material/tooltip'
 import { MatIconModule } from '@angular/material/icon'
-import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength'
+import { MatPasswordStrengthModule } from '../shared/password-strength'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 
 describe('ForgotPasswordComponent', () => {

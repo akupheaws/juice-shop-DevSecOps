@@ -5,7 +5,7 @@
 
 import { CodeSnippetService, CodeSnippet } from '../Services/code-snippet.service'
 import { CodeFixesService, Fixes } from '../Services/code-fixes.service'
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 import { ChallengeService } from '../Services/challenge.service'
 import { VulnLinesService, result } from '../Services/vuln-lines.service'
 import { Component, Inject, OnInit } from '@angular/core'
@@ -27,6 +27,7 @@ interface Solved {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-user-details',
   templateUrl: './code-snippet.component.html',
   styleUrls: ['./code-snippet.component.scss']

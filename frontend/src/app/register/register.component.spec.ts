@@ -25,7 +25,7 @@ import { of, throwError } from 'rxjs'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatTooltipModule } from '@angular/material/tooltip'
-import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength'
+import { MatPasswordStrengthModule } from '../shared/password-strength'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 
 describe('RegisterComponent', () => {

@@ -6,10 +6,15 @@
 
 @import 'theme';
 
+@include mat.all-component-typographies(mat.m2-define-typography-config());
+body {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
 @mixin link-theme($theme) {
   a:link,
   a:visited {
-    color: mat.get-color-from-palette(map-get($theme, accent), lighter);
+    color: mat.m2-get-color-from-palette(map-get($theme, accent), lighter);
     text-decoration: none;
   }
 
@@ -26,52 +31,52 @@
 
 @mixin deluxe-membership-theme($theme) {
   .deluxe-membership {
-    background: linear-gradient(90deg, mat.get-color-from-palette(map-get($theme, primary), 1) 0%, mat.get-color-from-palette(map-get($theme, background), card) 100%);
+    background: linear-gradient(90deg, mat.m2-get-color-from-palette(map-get($theme, primary), 1) 0%, mat.m2-get-color-from-palette(map-get($theme, background), card) 100%);
   }
 }
 
 @mixin notification-theme($theme) {
   .confirmation {
-    color: mat.get-color-from-palette(map-get($theme, accent));
+    color: mat.m2-get-color-from-palette(map-get($theme, accent));
   }
 
   .ribbon::before {
-    border: 5px solid mat.get-color-from-palette(map-get($theme, accent));
+    border: 5px solid mat.m2-get-color-from-palette(map-get($theme, accent));
   }
 
   .ribbon span {
-    background-color: mat.get-color-from-palette(map-get($theme, accent));
+    background-color: mat.m2-get-color-from-palette(map-get($theme, accent));
   }
 
   .error {
-    color: mat.get-color-from-palette(map-get($theme, warn));
+    color: mat.m2-get-color-from-palette(map-get($theme, warn));
   }
 
   .ribbon-sold::before {
-    border: 5px solid mat.get-color-from-palette(map-get($theme, warn));
+    border: 5px solid mat.m2-get-color-from-palette(map-get($theme, warn));
   }
 
   .ribbon-sold span {
-    background-color: mat.get-color-from-palette(map-get($theme, warn));
+    background-color: mat.m2-get-color-from-palette(map-get($theme, warn));
   }
 
   .primary-notification {
-    background-color: mat.get-color-from-palette(map-get($theme, primary), darker);
+    background-color: mat.m2-get-color-from-palette(map-get($theme, primary), darker);
   }
 
   .accent-notification {
-    background-color: mat.get-color-from-palette(map-get($theme, accent), darker);
+    background-color: mat.m2-get-color-from-palette(map-get($theme, accent), darker);
   }
 
   .warn-notification {
-    background-color: mat.get-color-from-palette(map-get($theme, warn), darker);
+    background-color: mat.m2-get-color-from-palette(map-get($theme, warn), darker);
   }
 }
 
 @mixin image-thumbnail-theme($theme) {
   .img-thumbnail {
-    background-color: mat.get-color-from-palette(map-get($theme, primary), 0.05);
-    border: 1px solid mat.get-color-from-palette(map-get($theme, primary));
+    background-color: mat.m2-get-color-from-palette(map-get($theme, primary), 0.05);
+    border: 1px solid mat.m2-get-color-from-palette(map-get($theme, primary));
     border-radius: 3px;
     padding: 3px;
   }
@@ -79,42 +84,42 @@
 
 @mixin score-star-theme($theme) {
   .empty-star {
-    stop-color: mat.get-color-from-palette(map-get($theme, primary));
+    stop-color: mat.m2-get-color-from-palette(map-get($theme, primary));
   }
 
   .filled-star {
-    stop-color: mat.get-color-from-palette(map-get($theme, accent));
+    stop-color: mat.m2-get-color-from-palette(map-get($theme, accent));
   }
 
   .star-border {
-    stroke: mat.get-color-from-palette(map-get($theme, accent));
+    stroke: mat.m2-get-color-from-palette(map-get($theme, accent));
   }
 }
 
 @mixin snackbar($theme) {
   .mat-snack-bar-container {
-    background-color: mat.get-color-from-palette(map-get($theme, background), card) !important;
-    color: mat.get-color-from-palette(map-get($theme, foreground), text) !important;
+    background-color: mat.m2-get-color-from-palette(map-get($theme, background), card) !important;
+    color: mat.m2-get-color-from-palette(map-get($theme, foreground), text) !important;
   }
 
   .mat-snack-bar-container.errorBar {
-    color: mat.get-color-from-palette(map-get($theme, warn)) !important;
+    color: mat.m2-get-color-from-palette(map-get($theme, warn)) !important;
   }
 
   .mat-snack-bar-container.confirmBar {
-    color: mat.get-color-from-palette(map-get($theme, accent)) !important;
+    color: mat.m2-get-color-from-palette(map-get($theme, accent)) !important;
   }
 }
 
 @mixin google-button($theme) {
   .google-button {
-    background-color: mat.get-color-from-palette(map-get($theme, accent), darker) !important;
+    background-color: mat.m2-get-color-from-palette(map-get($theme, accent), darker) !important;
   }
 }
 
 @mixin overlay-theme($theme) {
   .overlay {
-    background: mat.get-color-from-palette(map-get($theme, primary), darker, 0.7);
+    background: mat.m2-get-color-from-palette(map-get($theme, primary), darker, 0.7);
   }
 }
 

@@ -8,18 +8,27 @@ import { UserModel } from 'models/user'
 
 /* jslint node: true */
 const crypto = require('crypto')
-const expressJwt = require('express-jwt')
 const jwt = require('jsonwebtoken')
-const jws = require('jws')
 const sanitizeHtml = require('sanitize-html')
 const sanitizeFilename = require('sanitize-filename')
 const z85 = require('z85')
 const utils = require('./utils')
 const fs = require('fs')
 
-const publicKey = fs.readFileSync('encryptionkeys/jwt.pub', 'utf8')
+// Private keys are supplied at deployment time; never load the published training key.
+const configuredKeyFile = process.env.JWT_PRIVATE_KEY_FILE
+if (process.env.NODE_ENV === 'production' && !configuredKeyFile) {
+  throw new Error('JWT_PRIVATE_KEY_FILE is required in production')
+}
+const privateKey = configuredKeyFile
+  ? crypto.createPrivateKey(fs.readFileSync(configuredKeyFile))
+  : crypto.generateKeyPairSync('rsa', { modulusLength: 2048 }).privateKey
+if (privateKey.asymmetricKeyType !== 'rsa' || privateKey.asymmetricKeyDetails.modulusLength < 2048) {
+  throw new Error('JWT signing requires an RSA key of at least 2048 bits')
+}
+const publicKey = crypto.createPublicKey(privateKey).export({ type: 'spki', format: 'pem' })
 module.exports.publicKey = publicKey
-const privateKey = '-----BEGIN RSA PRIVATE KEY-----\r\nMIICXAIBAAKBgQDNwqLEe9wgTXCbC7+RPdDbBbeqjdbs4kOPOIGzqLpXvJXlxxW8iMz0EaM4BKUqYsIa+ndv3NAn2RxCd5ubVdJJcX43zO6Ko0TFEZx/65gY3BE0O6syCEmUP4qbSd6exou/F+WTISzbQ5FBVPVmhnYhG/kpwt/cIxK5iUn5hm+4tQIDAQABAoGBAI+8xiPoOrA+KMnG/T4jJsG6TsHQcDHvJi7o1IKC/hnIXha0atTX5AUkRRce95qSfvKFweXdJXSQ0JMGJyfuXgU6dI0TcseFRfewXAa/ssxAC+iUVR6KUMh1PE2wXLitfeI6JLvVtrBYswm2I7CtY0q8n5AGimHWVXJPLfGV7m0BAkEA+fqFt2LXbLtyg6wZyxMA/cnmt5Nt3U2dAu77MzFJvibANUNHE4HPLZxjGNXN+a6m0K6TD4kDdh5HfUYLWWRBYQJBANK3carmulBwqzcDBjsJ0YrIONBpCAsXxk8idXb8jL9aNIg15Wumm2enqqObahDHB5jnGOLmbasizvSVqypfM9UCQCQl8xIqy+YgURXzXCN+kwUgHinrutZms87Jyi+D8Br8NY0+Nlf+zHvXAomD2W5CsEK7C+8SLBr3k/TsnRWHJuECQHFE9RA2OP8WoaLPuGCyFXaxzICThSRZYluVnWkZtxsBhW2W8z1b8PvWUE7kMy7TnkzeJS2LSnaNHoyxi7IaPQUCQCwWU4U+v4lD7uYBw00Ga/xt+7+UqFPlPVdz1yyr4q24Zxaw0LgmuEvgU5dycq8N7JxjTubX0MIRR+G9fmDBBl8=\r\n-----END RSA PRIVATE KEY-----'
+const signingKeyPem = privateKey.export({ type: 'pkcs8', format: 'pem' })
 
 interface ResponseWithUser {
   status: string
@@ -50,13 +59,30 @@ exports.cutOffPoisonNullByte = (str: string) => {
   return str
 }
 
-exports.isAuthorized = () => expressJwt({ secret: publicKey })
-exports.denyAll = () => expressJwt({ secret: '' + Math.random() })
-exports.authorize = (user = {}) => jwt.sign(user, privateKey, { expiresInMinutes: 60 * 5, algorithm: 'RS256' })
-const verify = (token: string) => token ? jws.verify(token, publicKey) : false
+const verify = (token: string) => {
+  try {
+    jwt.verify(token, publicKey, { algorithms: ['RS256'] })
+    return true
+  } catch {
+    return false
+  }
+}
 module.exports.verify = verify
-const decode = (token: string) => { return jws.decode(token).payload }
+const decode = (token: string) => jwt.verify(token, publicKey, { algorithms: ['RS256'] })
 module.exports.decode = decode
+exports.isAuthorized = () => (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const payload = decode(utils.jwtFrom(req))
+    // Temporary 2FA tokens must never authorize a normal application request.
+    if (!payload.data?.id) return res.status(401).json({ error: 'Unauthorized' })
+    ;(req as Request & { user?: unknown }).user = payload
+    next()
+  } catch {
+    res.status(401).json({ error: 'Unauthorized' })
+  }
+}
+exports.denyAll = () => (_req: Request, res: Response) => res.status(401).json({ error: 'Unauthorized' })
+exports.authorize = (user = {}) => jwt.sign(user, privateKey, { expiresIn: '5h', algorithm: 'RS256' })
 
 exports.sanitizeHtml = (html: string) => sanitizeHtml(html)
 exports.sanitizeLegacy = (input = '') => input.replace(/<(?:\w+)\W+?[\w]/gi, '')
@@ -163,7 +189,7 @@ const roles = {
 module.exports.roles = roles
 
 const deluxeToken = (email: string) => {
-  const hmac = crypto.createHmac('sha256', privateKey)
+  const hmac = crypto.createHmac('sha256', signingKeyPem)
   return hmac.update(email + roles.deluxe).digest('hex')
 }
 
@@ -204,8 +230,8 @@ exports.appendUserId = () => {
 exports.updateAuthenticatedUsers = () => (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.token || utils.jwtFrom(req)
   if (token) {
-    jwt.verify(token, publicKey, (err: Error | null, decoded: any) => {
-      if (err === null) {
+    jwt.verify(token, publicKey, { algorithms: ['RS256'] }, (err: Error | null, decoded: any) => {
+      if (err === null && decoded?.data?.id) {
         if (authenticatedUsers.get(token) === undefined) {
           authenticatedUsers.put(token, decoded)
           res.cookie('token', token)

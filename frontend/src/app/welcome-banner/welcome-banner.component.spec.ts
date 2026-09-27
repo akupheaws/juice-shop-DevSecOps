@@ -5,7 +5,7 @@
 
 import { TranslateModule } from '@ngx-translate/core'
 import { HttpClientTestingModule } from '@angular/common/http/testing'
-import { CookieModule, CookieService } from 'ngx-cookie'
+import { CookieModule, CookieService } from '../shared/cookie'
 
 import { ComponentFixture, fakeAsync, TestBed, waitForAsync } from '@angular/core/testing'
 

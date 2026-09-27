@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing'
-import { CookieModule, CookieService } from 'ngx-cookie'
+import { CookieModule, CookieService } from '../shared/cookie'
 
 import { CodeFixesComponent } from './code-fixes.component'
 

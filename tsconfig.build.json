@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": [
+      "node",
+      "i18n",
+      "multer"
+    ]
+  },
+  "exclude": [
+    "node_modules",
+    "frontend",
+    "dist",
+    "build",
+    "vagrant",
+    "data/static/codefixes/**",
+    "test",
+    "cypress",
+    "**/*.d.ts",
+    ".eslintrc.js"
+  ]
+}

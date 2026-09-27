@@ -1,11 +1,8 @@
 module.exports = function searchProducts () {
   return (req: Request, res: Response, next: NextFunction) => {
-    let criteria: any = req.query.q === 'undefined' ? '' : req.query.q ?? ''
-    criteria = (criteria.length <= 200) ? criteria : criteria.substring(0, 200)
-    models.sequelize.query(
-      'SELECT * FROM Products WHERE ((name LIKE :searchQuery OR description LIKE :searchQuery) AND deletedAt IS NULL) ORDER BY name',
-      { replacements: { searchQuery: '%' + criteria + '%' } }
-    ).then(([products]: any) => {
+    const criteria = typeof req.query.q === 'string' ? req.query.q.slice(0, 200) : ''
+    ProductModel.findAll({ where: { [Op.or]: [{ name: { [Op.like]: `%${criteria}%` } }, { description: { [Op.like]: `%${criteria}%` } }] }, order: [['name', 'ASC']] })
+      .then((products: any) => {
         const dataString = JSON.stringify(products)
         for (let i = 0; i < products.length; i++) {
           products[i].name = req.__(products[i].name)

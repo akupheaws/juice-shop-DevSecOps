@@ -6,11 +6,12 @@
 import { Component, NgZone, OnInit } from '@angular/core'
 import { UserService } from '../Services/user.service'
 import { ActivatedRoute, Router } from '@angular/router'
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 import { ConfigurationService } from '../Services/configuration.service'
 import { SocketIoService } from '../Services/socket-io.service'
 
 @Component({
+  standalone: false,
   selector: 'app-deluxe-user',
   templateUrl: './deluxe-user.component.html',
   styleUrls: ['./deluxe-user.component.scss']

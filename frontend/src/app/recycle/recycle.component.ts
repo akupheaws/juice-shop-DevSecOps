@@ -19,6 +19,7 @@ library.add(faPaperPlane)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-recycle',
   templateUrl: './recycle.component.html',
   styleUrls: ['./recycle.component.scss']

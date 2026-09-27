@@ -16,6 +16,7 @@ library.add(faTrashAlt, faMinusSquare, faPlusSquare)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-purchase-basket',
   templateUrl: './purchase-basket.component.html',
   styleUrls: ['./purchase-basket.component.scss']

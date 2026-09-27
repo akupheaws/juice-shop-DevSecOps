@@ -16,6 +16,7 @@ library.add(faSave, faEdit)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-change-password',
   templateUrl: './change-password.component.html',
   styleUrls: ['./change-password.component.scss']

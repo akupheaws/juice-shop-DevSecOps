@@ -1,14 +1,65 @@
-title = "Juice Shop Gitleaks config"
+title = "Juice Shop reviewed test fixtures"
 
-# Keep all of Gitleaks' built-in detection rules.
 [extend]
 useDefault = true
 
-# Test files contain fake JWTs and API keys as fixtures. Those are known
-# false positives. Leaks anywhere else in the source code are still reported.
 [allowlist]
-description = "Fake secrets used as test fixtures"
+description = "Installed third-party packages (scanned separately) and generated Angular compiler caches"
+paths = ['''(^|/)node_modules/''', '''^frontend/\.angular/''']
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Reviewed synthetic credentials; never used outside NODE_ENV=test"
+condition = "AND"
+regexTarget = "secret"
 paths = [
-  '''node_modules/''',
-  '''.*[sS]pec\.ts$''',
+  '''^frontend/src/app/oauth/oauth\.component\.spec\.ts$''',
+  '''^test/api/2faSpec\.ts$''',
+  '''^test/api/basketApiSpec\.ts$''',
+  '''^test/api/chatBotSpec\.ts$''',
+  '''^test/api/dataExportApiSpec\.ts$''',
+  '''^test/api/erasureRequestApiSpec\.ts$''',
+  '''^test/api/feedbackApiSpec\.ts$''',
+  '''^test/api/loginApiSpec\.ts$''',
+  '''^test/api/productReviewApiSpec\.ts$''',
+  '''^test/api/userApiSpec\.ts$''',
+  '''^test/cypress/integration/e2e/login\.spec\.ts$''',
+  '''^test/cypress/integration/e2e/totpSetup\.spec\.ts$''',
+  '''^test/fixtures/seed\-credentials\.json$''',
+]
+regexes = [
+  '''^0192023a7bbd73250516f069df18b500$''',
+  '''^IFTXE3SPOEYVURT2MRYGI52TKJ4HC3KH$''',
+  '''^bW9jLmxpYW1nQGhjaW5pbW1pay5ucmVvamI=$''',
+  '''^bW9jLnRzZXRAdHNldA==$''',
+]
+
+[[rules]]
+id = "jwt"
+
+[[rules.allowlists]]
+description = "Reviewed synthetic credentials; never used outside NODE_ENV=test"
+condition = "AND"
+regexTarget = "secret"
+paths = [
+  '''^frontend/src/app/app\.guard\.spec\.ts$''',
+  '''^frontend/src/app/last\-login\-ip/last\-login\-ip\.component\.spec\.ts$''',
+  '''^test/api/userApiSpec\.ts$''',
+  '''^test/cypress/integration/e2e/forgedJwt\.spec\.ts$''',
+  '''^test/server/currentUserSpec\.ts$''',
+  '''^test/server/verifySpec\.ts$''',
+]
+regexes = [
+  '''^eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9\.eyJkYXRhIjp7ImVtYWlsIjoicnNhX2xvcmRAIn0sImlhdCI6MTU4MjIyMTY3NX0\.50f6VAIQk2Uzpf3sgH\-1JVrrTuwudonm2DKn2ec7Tg8$''',
+  '''^eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9\.eyJkYXRhIjp7ImVtYWlsIjoicnNhX2xvcmRAanVpY2Utc2gub3AifSwiaWF0IjoxNTgyMjIxNTc1fQ\.ycFwtqh4ht4Pq9K5rhiPPY256F9YCTIecd4FHFuSEAg$''',
+  '''^eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9\.eyJkYXRhIjp7ImVtYWlsIjoicnNhX2xvcmRAanVpY2Utc2gub3AifSwiaWF0IjoxNTgzMDM3NzExfQ\.gShXDT5TrE5736mpIbfVDEcQbLfteJaQUG7Z0PH8Xc8$''',
+  '''^eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9\.eyJkYXRhIjp7ImlkIjoxLCJlbWFpbCI6ImFkbWluQGp1aWNlLXNoLm9wIiwibGFzdExvZ2luSXAiOiIwLjAuMC4wIiwicHJvZmlsZUltYWdlIjoiZGVmYXVsdC5zdmcifSwiaWF0IjoxNTgyMjIyMzY0fQ\.CHiFQieZudYlrd1o8Ih\-Izv7XY_WZupt8Our\-CP9HqsczyEKqrWC7wWguOgVuSGDN_S3mP4FyuEFN8l60aAhVsUbqzFetvJkFwe5nKVhc9dHuen6cujQLMcTlHLKassOSDP41Q\-MkKWcUOQu0xUkTMfEq2hPMHpMosDb4benzH0$''',
+  '''^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJkYXRhIjp7Imxhc3RMb2dpbklwIjoiMS4yLjMuNCJ9fQ\.RAkmdqwNypuOxv3SDjPO4xMKvd1CddKvDFYDBfUt3bg$''',
+  '''^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJkYXRhIjp7fX0\.bVBhvll6IaeR3aUdoOeyR8YZe2S2DfhGAxTGfd9enLw$''',
+  '''^eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ\.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c$''',
+  '''^eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9\.eyJzdGF0dXMiOiJzdWNjZXNzIiwiZGF0YSI6eyJpZCI6MSwidXNlcm5hbWUiOiIiLCJlbWFpbCI6ImFkbWluQGp1aWNlLXNoLm9wIiwicGFzc3dvcmQiOiIwMTkyMDIzYTdiYmQ3MzI1MDUxNmYwNjlkZjE4YjUwMCIsInJvbGUiOiJhZG1pbiIsImxhc3RMb2dpbklwIjoiMC4wLjAuMCIsInByb2ZpbGVJbWFnZSI6ImRlZmF1bHQuc3ZnIiwidG90cFNlY3JldCI6IiIsImlzQWN0aXZlIjp0cnVlLCJjcmVhdGVkQXQiOiIyMDE5LTA4LTE5IDE1OjU2OjE1LjYyOSArMDA6MDAiLCJ1cGRhdGVkQXQiOiIyMDE5LTA4LTE5IDE1OjU2OjE1LjYyOSArMDA6MDAiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE1NjYyMzAyMjQsImV4cCI6MTU2NjI0ODIyNH0\.FL0kkcInY5sDMGKeLHfEOYDTQd3BjR6_mK7Tcm_RH6iCLotTSRRoRxHpLkbtIQKqBFIt14J4BpLapkzG7ppRWcEley5nego\-4iFOmXQvCBz5ISS3HdtM0saJnOe0agyVUen3huFp4F2UCth_y2ScjMn_4AgW66cz8NSFPRVpC8g$''',
+  '''^eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0\.eyJkYXRhIjp7ImVtYWlsIjoiand0bjNkQCJ9LCJpYXQiOjE1MDg2Mzk2MTIsImV4cCI6OTk5OTk5OTk5OX0\.$''',
+  '''^eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0\.eyJkYXRhIjp7ImVtYWlsIjoiand0bjNkQGp1aWNlLXNoLm9wIn0sImlhdCI6MTUwODYzOTYxMiwiZXhwIjo5OTk5OTk5OTk5fQ\.$''',
 ]

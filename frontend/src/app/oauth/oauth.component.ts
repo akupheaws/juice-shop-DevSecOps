@@ -5,10 +5,11 @@
 
 import { ActivatedRoute, Router } from '@angular/router'
 import { UserService } from '../Services/user.service'
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 import { Component, NgZone, OnInit } from '@angular/core'
 
 @Component({
+  standalone: false,
   selector: 'app-oauth',
   templateUrl: './oauth.component.html',
   styleUrls: ['./oauth.component.scss']

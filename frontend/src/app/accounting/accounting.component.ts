@@ -25,6 +25,7 @@ interface Order {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-accounting',
   templateUrl: './accounting.component.html',
   styleUrls: ['./accounting.component.scss']

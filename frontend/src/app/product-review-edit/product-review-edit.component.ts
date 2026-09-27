@@ -18,6 +18,7 @@ library.add(faPaperPlane, faArrowCircleLeft)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-product-review-edit',
   templateUrl: './product-review-edit.component.html',
   styleUrls: ['./product-review-edit.component.scss']

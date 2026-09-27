@@ -13,7 +13,7 @@ let firstConnectedSocket: any = null
 
 const registerWebsocketEvents = (server: any) => {
   const io = require('socket.io')(server)
-  global.io = io
+  ;(global as typeof globalThis & { io?: import('socket.io').Server }).io = io
 
   io.on('connection', (socket: any) => {
     if (firstConnectedSocket === null) {

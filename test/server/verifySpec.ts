@@ -254,7 +254,7 @@ describe('verify', () => {
       challenges.jwtForgedChallenge = { solved: false, save: save }
     })
 
-    it('"jwtUnsignedChallenge" is solved when forged unsigned token has email jwtn3d@juice-sh.op in the payload', () => {
+    it('"jwtUnsignedChallenge" is not solved when forged unsigned token has email jwtn3d@juice-sh.op in the payload', () => {
       /*
       Header: { "alg": "none", "typ": "JWT" }
       Payload: { "data": { "email": "jwtn3d@juice-sh.op" }, "iat": 1508639612, "exp": 9999999999 }
@@ -263,10 +263,10 @@ describe('verify', () => {
 
       verify.jwtChallenges()(req, res, next)
 
-      expect(challenges.jwtUnsignedChallenge.solved).to.equal(true)
+      expect(challenges.jwtUnsignedChallenge.solved).to.equal(false)
     })
 
-    it('"jwtUnsignedChallenge" is solved when forged unsigned token has string "jwtn3d@" in the payload', () => {
+    it('"jwtUnsignedChallenge" is not solved when forged unsigned token has string "jwtn3d@" in the payload', () => {
       /*
       Header: { "alg": "none", "typ": "JWT" }
       Payload: { "data": { "email": "jwtn3d@" }, "iat": 1508639612, "exp": 9999999999 }
@@ -275,7 +275,7 @@ describe('verify', () => {
 
       verify.jwtChallenges()(req, res, next)
 
-      expect(challenges.jwtUnsignedChallenge.solved).to.equal(true)
+      expect(challenges.jwtUnsignedChallenge.solved).to.equal(false)
     })
 
     it('"jwtUnsignedChallenge" is not solved via regularly signed token even with email jwtn3d@juice-sh.op in the payload', () => {
@@ -288,7 +288,7 @@ describe('verify', () => {
     })
 
     if (!utils.disableOnWindowsEnv()) {
-      it('"jwtForgedChallenge" is solved when forged token HMAC-signed with public RSA-key has email rsa_lord@juice-sh.op in the payload', () => {
+      it('"jwtForgedChallenge" is not solved when forged token HMAC-signed with public RSA-key has email rsa_lord@juice-sh.op in the payload', () => {
         /*
         Header: { "alg": "HS256", "typ": "JWT" }
         Payload: { "data": { "email": "rsa_lord@juice-sh.op" }, "iat": 1508639612, "exp": 9999999999 }
@@ -297,10 +297,10 @@ describe('verify', () => {
 
         verify.jwtChallenges()(req, res, next)
 
-        expect(challenges.jwtForgedChallenge.solved).to.equal(true)
+        expect(challenges.jwtForgedChallenge.solved).to.equal(false)
       })
 
-      it('"jwtForgedChallenge" is solved when forged token HMAC-signed with public RSA-key has string "rsa_lord@" in the payload', () => {
+      it('"jwtForgedChallenge" is not solved when forged token HMAC-signed with public RSA-key has string "rsa_lord@" in the payload', () => {
         /*
         Header: { "alg": "HS256", "typ": "JWT" }
         Payload: { "data": { "email": "rsa_lord@" }, "iat": 1508639612, "exp": 9999999999 }
@@ -309,7 +309,7 @@ describe('verify', () => {
 
         verify.jwtChallenges()(req, res, next)
 
-        expect(challenges.jwtForgedChallenge.solved).to.equal(true)
+        expect(challenges.jwtForgedChallenge.solved).to.equal(false)
       })
 
       it('"jwtForgedChallenge" is not solved when token regularly signed with private RSA-key has email rsa_lord@juice-sh.op in the payload', () => {

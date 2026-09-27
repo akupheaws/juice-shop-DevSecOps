@@ -19,6 +19,7 @@ library.add(faUser, faEye, faHome, faArchive, faTrashAlt)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-administration',
   templateUrl: './administration.component.html',
   styleUrls: ['./administration.component.scss']

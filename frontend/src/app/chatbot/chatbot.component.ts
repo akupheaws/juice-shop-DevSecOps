@@ -11,7 +11,7 @@ import { dom, library } from '@fortawesome/fontawesome-svg-core'
 import { faBomb } from '@fortawesome/free-solid-svg-icons'
 import { FormSubmitService } from '../Services/form-submit.service'
 import { TranslateService } from '@ngx-translate/core'
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 
 library.add(faBomb)
 dom.watch()
@@ -32,6 +32,7 @@ interface MessageActions {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-chatbot',
   templateUrl: './chatbot.component.html',
   styleUrls: ['./chatbot.component.scss']

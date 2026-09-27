@@ -14,6 +14,7 @@ library.add(faBitcoin, faUniversity, faGraduationCap, faCommentAlt, faComments, 
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-token-sale',
   templateUrl: './token-sale.component.html',
   styleUrls: ['./token-sale.component.scss']

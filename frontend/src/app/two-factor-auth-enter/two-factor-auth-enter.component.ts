@@ -6,7 +6,7 @@
 import { Component, NgZone } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { TwoFactorAuthService } from '../Services/two-factor-auth-service'
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 import { UserService } from '../Services/user.service'
 import { Router } from '@angular/router'
 import { dom, library } from '@fortawesome/fontawesome-svg-core'
@@ -20,6 +20,7 @@ interface TokenEnterFormFields {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-two-factor-auth-enter',
   templateUrl: './two-factor-auth-enter.component.html',
   styleUrls: ['./two-factor-auth-enter.component.scss']

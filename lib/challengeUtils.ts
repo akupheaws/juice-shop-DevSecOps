@@ -50,9 +50,9 @@ export const sendNotification = function (challenge: { difficulty?: number, key:
     const wasPreviouslyShown = notifications.find(({ key }: { key: string }) => key === challenge.key) !== undefined
     notifications.push(notification)
 
-    if (global.io && (isRestore || !wasPreviouslyShown)) {
+    if ((global as typeof globalThis & { io?: import('socket.io').Server }).io && (isRestore || !wasPreviouslyShown)) {
       // @ts-expect-error
-      global.io.emit('challenge solved', notification)
+      (global as typeof globalThis & { io?: import('socket.io').Server }).io.emit('challenge solved', notification)
     }
   }
 }

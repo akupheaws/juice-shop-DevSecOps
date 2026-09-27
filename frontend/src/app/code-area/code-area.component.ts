@@ -12,6 +12,7 @@ interface LineMarker {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-code-area',
   templateUrl: './code-area.component.html',
   styleUrls: ['./code-area.component.scss']

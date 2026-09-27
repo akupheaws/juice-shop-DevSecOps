@@ -17,6 +17,7 @@ library.add(faTwitter)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-order-completion',
   templateUrl: './order-completion.component.html',
   styleUrls: ['./order-completion.component.scss']

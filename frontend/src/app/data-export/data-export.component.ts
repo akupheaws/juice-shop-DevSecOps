@@ -10,6 +10,7 @@ import { DataSubjectService } from '../Services/data-subject.service'
 import { DomSanitizer } from '@angular/platform-browser'
 
 @Component({
+  standalone: false,
   selector: 'app-data-export',
   templateUrl: './data-export.component.html',
   styleUrls: ['./data-export.component.scss']

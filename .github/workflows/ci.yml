@@ -27,15 +27,17 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 18.x
+          node-version: 22.x
           cache: npm
-          cache-dependency-path: package.json
+          cache-dependency-path: |
+            package-lock.json
+            frontend/package-lock.json
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run tests
-        run: npm run test:all
+        run: npm run test:all && npm run test:security
 
   gitleaks:
     name: Gitleaks scan
@@ -47,12 +49,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Check current source for secrets
+        run: |
+          docker run --rm \
+            --user "$(id -u):$(id -g)" \
+            -v "$GITHUB_WORKSPACE:/repo" \
+            ghcr.io/gitleaks/gitleaks:v8.30.1 \
+            dir /repo --redact --config /repo/.gitleaks.toml
+
       - name: Run Gitleaks container
         run: |
           docker run --rm \
             --user "$(id -u):$(id -g)" \
             -v "$GITHUB_WORKSPACE:/repo" \
-            ghcr.io/gitleaks/gitleaks:v8.21.2 \
+            ghcr.io/gitleaks/gitleaks:v8.30.1 \
             detect --source=/repo --verbose --redact --exit-code 0 \
             --report-format json --report-path /repo/gitleaks.json
 
@@ -62,7 +72,6 @@ jobs:
         with:
           name: gitleaks-report
           path: gitleaks.json
-    continue-on-error: true
 
   njsscan:
     name: NJS scan
@@ -132,20 +141,20 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 18.x
+          node-version: 22.x
 
       - name: Install dependencies
         run: |
-          npm install --ignore-scripts
-          cd frontend && npm install --ignore-scripts --legacy-peer-deps
+          npm ci --ignore-scripts
+          node scripts/remove-unused-benchmarks.js
+          npm ci --prefix frontend --ignore-scripts
 
       - name: Install Retire.js
         run: npm install -g retire
 
       - name: Run Retire.js
         run: |
-          retire --path . --exitwith 0
-          retire --path . --outputformat json --outputpath retirejs.json --exitwith 0
+          retire --path . --outputformat json --outputpath retirejs.json
 
       - name: Upload Retire.js report
         if: always()
@@ -153,7 +162,6 @@ jobs:
         with:
           name: retirejs-report
           path: retirejs.json
-    continue-on-error: true
 
   defectdojo:
     name: Upload reports to DefectDojo

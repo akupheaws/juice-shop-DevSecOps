@@ -17,6 +17,7 @@ library.add(faPaperPlane, faTrashAlt)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-payment-method',
   templateUrl: './payment-method.component.html',
   styleUrls: ['./payment-method.component.scss']

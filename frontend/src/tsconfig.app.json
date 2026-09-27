@@ -2,8 +2,9 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "module": "es2020",
-    "types": []
+    "module": "es2022",
+    "types": [],
+    "moduleResolution": "bundler"
   },
   "files": [
     "main.ts",

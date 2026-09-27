@@ -18,6 +18,7 @@ library.add(faRocket, faShippingFast, faTruck)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-delivery-method',
   templateUrl: './delivery-method.component.html',
   styleUrls: ['./delivery-method.component.scss']

@@ -18,6 +18,7 @@ library.add(faBomb)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-complaint',
   templateUrl: './complaint.component.html',
   styleUrls: ['./complaint.component.scss']

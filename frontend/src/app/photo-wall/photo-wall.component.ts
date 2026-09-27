@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core'
 import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { mimeType } from './mime-type.validator'
 import { PhotoWallService } from '../Services/photo-wall.service'
-import { IImage } from 'ng-simple-slideshow'
+import { IImage } from '../shared/slideshow'
 import { ConfigurationService } from '../Services/configuration.service'
 import { dom, library } from '@fortawesome/fontawesome-svg-core'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons'
@@ -17,6 +17,7 @@ library.add(faTwitter)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-photo-wall',
   templateUrl: './photo-wall.component.html',
   styleUrls: ['./photo-wall.component.scss']

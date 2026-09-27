@@ -6,16 +6,16 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http'
-import { CookieModule, CookieService } from 'ngx-cookie'
+import { CookieModule, CookieService } from './shared/cookie'
 import { ReactiveFormsModule } from '@angular/forms'
 import { Routing } from './app.routing'
 import { OverlayContainer } from '@angular/cdk/overlay'
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core'
 import { TranslateHttpLoader } from '@ngx-translate/http-loader'
-import { QRCodeModule } from 'anuglar2-qrcode'
+import { QRCodeComponent } from 'angularx-qrcode'
 import { ClipboardModule } from 'ngx-clipboard'
 import { FileUploadModule } from 'ng2-file-upload'
-import { SlideshowModule } from 'ng-simple-slideshow'
+import { SlideshowModule } from './shared/slideshow'
 import { NgxSpinnerModule } from 'ngx-spinner'
 import { AppComponent } from './app.component'
 import { AboutComponent } from './about/about.component'
@@ -48,7 +48,7 @@ import { ProductReviewEditComponent } from './product-review-edit/product-review
 import { TwoFactorAuthEnterComponent } from './two-factor-auth-enter/two-factor-auth-enter.component'
 import { PrivacySecurityComponent } from './privacy-security/privacy-security.component'
 import { ErrorPageComponent } from './error-page/error-page.component'
-import { NgMatSearchBarModule } from 'ng-mat-search-bar'
+import { NgMatSearchBarModule } from './shared/search-bar'
 import { RequestInterceptor } from './Services/request.interceptor'
 import { ProductService } from './Services/product.service'
 import { ConfigurationService } from './Services/configuration.service'
@@ -70,7 +70,7 @@ import { DataSubjectService } from './Services/data-subject.service'
 import { ImageCaptchaService } from './Services/image-captcha.service'
 import { AddressService } from './Services/address.service'
 import { QuantityService } from './Services/quantity.service'
-import { FlexLayoutModule } from '@angular/flex-layout'
+import { FlexLayoutModule } from '@ngbracket/ngx-layout'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatIconModule } from '@angular/material/icon'
@@ -127,7 +127,7 @@ import { PhotoWallComponent } from './photo-wall/photo-wall.component'
 import { PhotoWallService } from './Services/photo-wall.service'
 import { DeluxeUserComponent } from './deluxe-user/deluxe-user.component'
 import { AccountingGuard, AdminGuard, DeluxeGuard, LoginGuard } from './app.guard'
-import { MatPasswordStrengthModule } from '@angular-material-extensions/password-strength'
+import { MatPasswordStrengthModule } from './shared/password-strength'
 import { MatSlideToggleModule } from '@angular/material/slide-toggle'
 import { FeedbackDetailsComponent } from './feedback-details/feedback-details.component'
 import { MatSliderModule } from '@angular/material/slider'
@@ -135,7 +135,7 @@ import { MatTabsModule } from '@angular/material/tabs'
 import { MatChipsModule } from '@angular/material/chips'
 import { CodeSnippetComponent } from './code-snippet/code-snippet.component'
 import { CodeAreaComponent } from './code-area/code-area.component'
-import { NgxTextDiffModule } from 'ngx-text-diff'
+import { NgxTextDiffModule } from './shared/text-diff'
 import { CodeFixesComponent } from './code-fixes/code-fixes.component'
 
 export function HttpLoaderFactory (http: HttpClient) {
@@ -220,7 +220,7 @@ export function HttpLoaderFactory (http: HttpClient) {
     ReactiveFormsModule,
     BrowserAnimationsModule,
     SlideshowModule,
-    QRCodeModule,
+    QRCodeComponent,
     FileUploadModule,
     ClipboardModule,
     NgxSpinnerModule,

@@ -6,9 +6,10 @@
 import { Component, OnInit } from '@angular/core'
 import { ConfigurationService } from '../Services/configuration.service'
 import { MatDialogRef } from '@angular/material/dialog'
-import { CookieService } from 'ngx-cookie'
+import { CookieService } from '../shared/cookie'
 
 @Component({
+  standalone: false,
   selector: 'app-welcome-banner',
   templateUrl: 'welcome-banner.component.html',
   styleUrls: ['./welcome-banner.component.scss']

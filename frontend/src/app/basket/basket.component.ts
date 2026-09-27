@@ -12,6 +12,7 @@ library.add(faCartArrowDown)
 dom.watch()
 
 @Component({
+  standalone: false,
   selector: 'app-basket',
   templateUrl: './basket.component.html',
   styleUrls: ['./basket.component.scss']

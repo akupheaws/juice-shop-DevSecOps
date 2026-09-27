@@ -8,6 +8,7 @@ import { DomSanitizer } from '@angular/platform-browser'
 import * as jwtDecode from 'jwt-decode'
 
 @Component({
+  standalone: false,
   selector: 'app-last-login-ip',
   templateUrl: './last-login-ip.component.html',
   styleUrls: ['./last-login-ip.component.scss']

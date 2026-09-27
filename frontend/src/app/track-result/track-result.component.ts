@@ -22,6 +22,7 @@ export enum Status {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-track-result',
   templateUrl: './track-result.component.html',
   styleUrls: ['./track-result.component.scss']

@@ -7,6 +7,7 @@ import { Component, NgZone } from '@angular/core'
 import { Router } from '@angular/router'
 
 @Component({
+  standalone: false,
   selector: 'app-address-select',
   templateUrl: './address-select.component.html',
   styleUrls: ['./address-select.component.scss']

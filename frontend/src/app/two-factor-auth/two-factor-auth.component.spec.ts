@@ -25,7 +25,7 @@ import { MatDividerModule } from '@angular/material/divider'
 import { MatSnackBarModule } from '@angular/material/snack-bar'
 import { MatTooltipModule } from '@angular/material/tooltip'
 
-import { QRCodeModule } from 'anuglar2-qrcode'
+import { QRCodeComponent } from 'angularx-qrcode'
 import { of } from 'rxjs'
 import { ConfigurationService } from '../Services/configuration.service'
 import { TwoFactorAuthService } from '../Services/two-factor-auth-service'
@@ -58,7 +58,7 @@ describe('TwoFactorAuthComponent', () => {
         MatDialogModule,
         MatDividerModule,
         MatButtonModule,
-        QRCodeModule,
+        QRCodeComponent,
         MatSnackBarModule,
         MatTooltipModule
       ],

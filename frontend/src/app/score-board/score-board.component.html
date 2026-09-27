@@ -145,11 +145,11 @@
         <mat-header-cell *matHeaderCellDef fxShow fxHide.lt-lg translate>LABEL_TAGS</mat-header-cell>
         <mat-cell *matCellDef="let challenge" fxShow fxHide.lt-lg>
           <span *ngIf="challenge.tags">
-            <mat-chip-list *ngFor="let tag of challenge.tags.split(',').sort()">
+            <mat-chip-set *ngFor="let tag of challenge.tags.split(',').sort()">
               <mat-chip [matTooltip]="('TAG_' + tag?.toUpperCase().split(' ').join('_') + '_DESCRIPTION' | translate)">
                 {{('TAG_' + tag?.toUpperCase().split(' ').join('_') | translate)}}
               </mat-chip>
-            </mat-chip-list>
+            </mat-chip-set>
           </span>
         </mat-cell>
       </ng-container>
