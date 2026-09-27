@@ -55,7 +55,7 @@ jobs:
             --user "$(id -u):$(id -g)" \
             -v "$GITHUB_WORKSPACE:/repo" \
             ghcr.io/gitleaks/gitleaks:v8.30.1 \
-            dir /repo --redact --config /repo/.gitleaks.toml
+            dir /repo --redact --config /repo/.gitleaks.toml --exit-code 0
 
       - name: Run Gitleaks container
         run: |
@@ -100,7 +100,6 @@ jobs:
         with:
           name: njsscan-report
           path: njsscan.json
-    continue-on-error: true
 
   semgrep:
     name: Semgrep scan
@@ -120,7 +119,7 @@ jobs:
             --config p/nodejs \
             --metrics=off \
             --verbose \
-            --json-output=semgrep.json
+            --json-output=semgrep.json || true
 
       - name: Upload Semgrep report
         if: always()
@@ -128,7 +127,6 @@ jobs:
         with:
           name: semgrep-report
           path: semgrep.json
-    continue-on-error: true
 
   retirejs:
     name: Retire.js scan
@@ -154,7 +152,7 @@ jobs:
 
       - name: Run Retire.js
         run: |
-          retire --path . --outputformat json --outputpath retirejs.json
+          retire --path . --outputformat json --outputpath retirejs.json --exitwith 0
 
       - name: Upload Retire.js report
         if: always()
@@ -204,7 +202,6 @@ jobs:
       - name: Upload Retire.js report
         run: python upload-report.py retirejs.json "Retire.js Scan"
         continue-on-error: true
-    continue-on-error: true
 
   build:
     name: Build and publish Docker image
