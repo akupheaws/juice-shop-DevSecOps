@@ -4,11 +4,12 @@ After a successful image build and ECR push on `main`, the `deploy` job
 connects to EC2 and runs that build's image by digest. The published tag remains
 `latest`. Deployments to the instance run one at a time.
 
+Configure the GitHub Actions repository secret `SSH_PRIVATE_KEY` with the full
+multiline, unencrypted private key authorized for the SSH user on the instance.
 Configure these GitHub repository variables:
 
 | Variable | Value |
 | --- | --- |
-| `SSH_PRIVATE_KEY` | Full multiline SSH private key authorized on the instance |
 | `EC2_HOST` | Optional host override; defaults to `18.215.233.13` |
 | `EC2_USER` | Optional SSH user override; defaults to `ec2-user` |
 | `EC2_PORT` | Application port on EC2; defaults to `80` |
@@ -30,6 +31,10 @@ is pulled. Expect a short service interruption. An HTTP startup check runs
 inside the new container; a failed startup restores the previous container.
 Container-local application data does not persist across successful replacements.
 
-GitHub repository variables are not secret storage. The script masks the key
-in its logs, but storing it as a GitHub Actions secret is preferable. If moved,
-change `vars.SSH_PRIVATE_KEY` to `secrets.SSH_PRIVATE_KEY` in the workflow.
+If SSH reports `Permission denied (publickey)`, check the instance's actual login
+username and confirm the private key matches a public key in that user's
+`~/.ssh/authorized_keys`. A key exposed in logs must be replaced: install the new
+public key, update the GitHub secret, then remove the exposed public key from
+`authorized_keys`. Delete the old repository variable and the exposed workflow
+run logs. Script masking happens after the runner prints the step environment,
+so it cannot protect a private key supplied as a repository variable.

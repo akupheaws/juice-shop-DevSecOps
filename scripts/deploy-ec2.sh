@@ -19,9 +19,13 @@ done <<< "$SSH_PRIVATE_KEY"
 
 ssh_dir=$(mktemp -d)
 trap 'rm -rf "$ssh_dir"' EXIT
-printf '%s\n' "$SSH_PRIVATE_KEY" > "$ssh_dir/key"
+printf '%s\n' "$SSH_PRIVATE_KEY" | tr -d '\r' > "$ssh_dir/key"
 chmod 600 "$ssh_dir/key"
-ssh_options=(-i "$ssh_dir/key" -o BatchMode=yes -o ConnectTimeout=20
+if ! ssh-keygen -y -P '' -f "$ssh_dir/key" >/dev/null 2>&1; then
+  echo 'SSH_PRIVATE_KEY must contain a valid, unencrypted private key with actual newlines.' >&2
+  exit 1
+fi
+ssh_options=(-i "$ssh_dir/key" -o IdentitiesOnly=yes -o BatchMode=yes -o ConnectTimeout=20
   -o StrictHostKeyChecking=accept-new -o "UserKnownHostsFile=$ssh_dir/known_hosts")
 target="$EC2_USER@$EC2_HOST"
 image="$ECR_REGISTRY/$ECR_REPOSITORY@$IMAGE_DIGEST"

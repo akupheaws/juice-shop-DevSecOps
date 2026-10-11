@@ -258,7 +258,7 @@ jobs:
 
       - name: Pull and run image on EC2
         env:
-          SSH_PRIVATE_KEY: ${{ vars.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           EC2_HOST: ${{ vars.EC2_HOST || '18.215.233.13' }}
           EC2_USER: ${{ vars.EC2_USER || 'ec2-user' }}
           EC2_PORT: ${{ vars.EC2_PORT || '80' }}
