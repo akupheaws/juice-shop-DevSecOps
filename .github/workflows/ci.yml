@@ -12,7 +12,9 @@ permissions:
   contents: read
 
 env:
-  IMAGE_NAME: akupheaws/juice-shop
+  AWS_REGION: us-east-1
+  ECR_REGISTRY: 430986758702.dkr.ecr.us-east-1.amazonaws.com
+  ECR_REPOSITORY: juice-shop
   IMAGE_TAG: tagname
 
 jobs:
@@ -204,29 +206,29 @@ jobs:
         continue-on-error: true
 
   build:
-    name: Build and publish Docker image
+    name: Build and publish Docker image to ECR
     needs: test
     runs-on: ubuntu-24.04
     if: github.event_name != 'pull_request'
-    env:
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
 
-      - name: Log in to Docker Hub
-        if: env.DOCKERHUB_TOKEN != ''
-        uses: docker/login-action@v3
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          username: akupheaws
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        run: |
+          aws ecr get-login-password --region "$AWS_REGION" |
+            docker login --username AWS --password-stdin "$ECR_REGISTRY"
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ env.DOCKERHUB_TOKEN != '' }}
-          tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-
-#   
+          push: true
+          tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
