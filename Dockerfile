@@ -1,7 +1,7 @@
 FROM node:22-bookworm-slim AS installer
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
 COPY . /juice-shop
 WORKDIR /juice-shop
-RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
 RUN npm ci
 RUN npm prune --omit=dev --ignore-scripts
 RUN rm -rf frontend/node_modules

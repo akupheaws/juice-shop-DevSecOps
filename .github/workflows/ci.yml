@@ -229,6 +229,9 @@ jobs:
           aws ecr get-login-password --region "$AWS_REGION" |
             docker login --username AWS --password-stdin "$ECR_REGISTRY"
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
       - name: Build and push Docker image
         id: image
         uses: docker/build-push-action@v6
@@ -236,6 +239,9 @@ jobs:
           context: .
           push: true
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+          cache-from: type=gha,scope=juice-shop
+          # Cache intermediate installer layers as well as the final image.
+          cache-to: type=gha,scope=juice-shop,mode=max
 
   deploy:
     name: Deploy image to EC2
