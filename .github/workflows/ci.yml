@@ -210,6 +210,8 @@ jobs:
     needs: test
     runs-on: ubuntu-24.04
     if: github.event_name != 'pull_request'
+    outputs:
+      image-digest: ${{ steps.image.outputs.digest }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -227,8 +229,38 @@ jobs:
             docker login --username AWS --password-stdin "$ECR_REGISTRY"
 
       - name: Build and push Docker image
+        id: image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
+
+  deploy:
+    name: Deploy image to EC2
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    concurrency:
+      group: ec2-deployment
+      cancel-in-progress: false
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Pull and run image on EC2
+        env:
+          SSH_PRIVATE_KEY: ${{ vars.SSH_PRIVATE_KEY }}
+          EC2_HOST: ${{ vars.EC2_HOST || '18.215.233.13' }}
+          EC2_USER: ${{ vars.EC2_USER || 'ec2-user' }}
+          EC2_PORT: ${{ vars.EC2_PORT || '80' }}
+          IMAGE_DIGEST: ${{ needs.build.outputs.image-digest }}
+        run: bash scripts/deploy-ec2.sh
