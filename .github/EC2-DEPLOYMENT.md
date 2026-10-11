@@ -31,6 +31,12 @@ is pulled. Expect a short service interruption. An HTTP startup check runs
 inside the new container; a failed startup restores the previous container.
 Container-local application data does not persist across successful replacements.
 
+Production startup requires an RSA JWT signing key. Deployment creates it once
+at `/var/lib/juice-shop/secrets/jwt-private.pem` on EC2 and mounts the directory
+read-only with `JWT_PRIVATE_KEY_FILE` set. The key persists across deployments
+and is never included in the image or printed in logs. Failed startup checks
+print the container logs and state before rollback.
+
 If SSH reports `Permission denied (publickey)`, check the instance's actual login
 username and confirm the private key matches a public key in that user's
 `~/.ssh/authorized_keys`. A key exposed in logs must be replaced: install the new

@@ -43,6 +43,26 @@ registry=$3
 trap 'sudo -n docker logout "$registry" >/dev/null 2>&1 || true' EXIT
 sudo -n docker pull "$image"
 
+# Keep the JWT signing key on EC2 so it survives image replacements.
+sudo -n mkdir -p /var/lib/juice-shop/secrets
+sudo -n chown 65532:65532 /var/lib/juice-shop/secrets
+sudo -n chmod 700 /var/lib/juice-shop/secrets
+sudo -n docker run --rm --user 65532:65532 \
+  --mount type=bind,src=/var/lib/juice-shop/secrets,dst=/run/juice-shop-secrets \
+  --entrypoint /nodejs/bin/node "$image" -e '
+    const fs = require("node:fs");
+    const crypto = require("node:crypto");
+    const path = "/run/juice-shop-secrets/jwt-private.pem";
+    if (!fs.existsSync(path)) {
+      const { privateKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
+      fs.writeFileSync(path, privateKey.export({ type: "pkcs8", format: "pem" }), { mode: 0o400, flag: "wx" });
+    }
+    const key = crypto.createPrivateKey(fs.readFileSync(path));
+    if (key.asymmetricKeyType !== "rsa" || key.asymmetricKeyDetails.modulusLength < 2048) {
+      throw new Error("JWT signing key must be RSA with at least 2048 bits");
+    }
+  '
+
 # Keep the previous container available until the replacement responds.
 sudo -n docker rm -f juice-shop-previous >/dev/null 2>&1 || true
 if sudo -n docker container inspect juice-shop >/dev/null 2>&1; then
@@ -58,7 +78,10 @@ rollback() {
   fi
 }
 
-if ! sudo -n docker run -d --name juice-shop --restart unless-stopped -p "$port:3000" "$image"; then
+if ! sudo -n docker run -d --name juice-shop --restart unless-stopped \
+  -p "$port:3000" \
+  --mount type=bind,src=/var/lib/juice-shop/secrets,dst=/run/juice-shop-secrets,readonly \
+  -e JWT_PRIVATE_KEY_FILE=/run/juice-shop-secrets/jwt-private.pem "$image"; then
   rollback
   exit 1
 fi
@@ -72,6 +95,8 @@ for attempt in {1..30}; do
   sleep 2
 done
 echo 'Juice Shop failed its startup check; restoring previous container.' >&2
+sudo -n docker logs --tail 100 juice-shop >&2 || true
+sudo -n docker inspect --format '{{json .State}}' juice-shop >&2 || true
 rollback
 exit 1
 REMOTE
