@@ -15,7 +15,7 @@ env:
   AWS_REGION: us-east-1
   ECR_REGISTRY: 430986758702.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: juice-shop
-  IMAGE_TAG: tagname
+  IMAGE_TAG: latest
 
 jobs:
   test:
